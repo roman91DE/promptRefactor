@@ -62,11 +62,20 @@ The selected code will be sent to Claude along with your prompt, and the respons
 :PromptRefactor add docstrings
 ```
 
+## Features
+
+- Async execution — Neovim stays responsive while Claude processes your request
+- Buffer-safe — captures the target buffer at invocation, so switching buffers mid-flight won't corrupt the wrong file
+- Atomic undo — the entire refactor is a single undo step (`u` reverts it cleanly)
+- Concurrency guard — prevents overlapping refactor jobs; wait for one to finish before starting another
+- Filetype-aware — includes the buffer's filetype in the prompt for better results
+
 ## How it works
 
 1. Takes your prompt and the selected code (or entire file)
-2. Sends it to Claude Code CLI with instructions to return only refactored code
-3. Replaces the original code with Claude's response
+2. Sends it to Claude Code CLI (`claude -p`) asynchronously with instructions to return only refactored code
+3. Strips any markdown code fences from the response
+4. Replaces the original lines in the correct buffer
 
 ## License
 
