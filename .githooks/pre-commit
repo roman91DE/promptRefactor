@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+
+failed=0
+for test_file in "$REPO_ROOT"/tests/*_test.lua; do
+	echo "=== $(basename "$test_file") ==="
+	if ! nvim --headless -u NONE -l "$test_file"; then
+		failed=1
+	fi
+	echo
+done
+
+if [ "$failed" -ne 0 ]; then
+	echo "Pre-commit hook FAILED — fix test failures before committing."
+	exit 1
+fi
+
+echo "All tests passed."
